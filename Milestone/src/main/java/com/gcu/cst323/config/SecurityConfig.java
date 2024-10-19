@@ -20,12 +20,15 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/register", "/login").permitAll()
+                .requestMatchers("/register", "/login/login").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin()
+				//.loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/", true)
+				//.permitAll()
             .and()
-            .logout();
+            .logout()
+        		.permitAll();
         return http.build();
     }
 }

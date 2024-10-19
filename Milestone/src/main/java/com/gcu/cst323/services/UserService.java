@@ -32,4 +32,8 @@ public class UserService {
     public Optional<UserModel> findUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+    
+    public boolean checkPassword(String rawPassword, String hashedPassword) {
+        return passwordEncoder.matches(rawPassword, hashedPassword);
+    }
 }
