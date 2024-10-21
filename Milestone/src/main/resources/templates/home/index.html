@@ -1,51 +1,69 @@
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="layouts/defaultTemplate">
-
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/defaultTemplate">
 <head>
-	<title th:text="${title}"></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" th:href="@{/static/css/styles.css}">
 </head>
-
 <body>
-	<div layout:fragment="content">
-		<h1 th:text="${title}"></h1>
-		<h2 th:text="${message}"></h2>
-		<p>Some text</p>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<p>Some more text</p>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<p>Some more text</p>
+    <div layout:fragment="content">
+        <h1>Task Management</h1>
+        
+        <h2>Add a New Task</h2>
+        <form id="task-form">
+            <input type="text" id="task-name" placeholder="Task Name" required>
+            <input type="text" id="task-desc" placeholder="Task Description" required>
+            <button type="submit">Add Task</button>
+        </form>
+        
+        <h2>All Tasks</h2>
+        <ul id="task-list"></ul>
+    </div>
 
-	</div>
+    <script>
+        document.getElementById('task-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const taskName = document.getElementById('task-name').value;
+            const taskDesc = document.getElementById('task-desc').value;
+    
+            const response = await fetch('/api/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: taskName,
+                    description: taskDesc
+                })
+            });
+    
+            if (response.ok) {
+                const task = await response.json();
+                const taskList = document.getElementById('task-list');
+                const taskItem = document.createElement('li');
+                taskItem.textContent = `${task.name}: ${task.description}`;
+                taskList.appendChild(taskItem);
+            }
+        });
+    
+        async function fetchTasks() {
+            const response = await fetch('/api/tasks');
+            const tasks = await response.json();
+            const taskList = document.getElementById('task-list');
+    
+            tasks.forEach(task => {
+                const taskItem = document.createElement('li');
+                taskItem.textContent = `${task.name}: ${task.description}`;
+                taskList.appendChild(taskItem);
+            });
+        }
+    
+        fetchTasks();
+    </script>
 </body>
-
 </html>
+
