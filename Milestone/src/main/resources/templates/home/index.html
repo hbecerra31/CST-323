@@ -1,65 +1,84 @@
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="layouts/defaultTemplate">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/defaultTemplate">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" th:href="@{/static/css/styles.css}">
 </head>
 <body>
-    <h1>Task Management</h1>
-    
-    <h2>Add a New Task</h2>
-    <form id="task-form">
-        <input type="text" id="task-name" placeholder="Task Name" required>
-        <input type="text" id="task-desc" placeholder="Task Description" required>
-        <button type="submit">Add Task</button>
-    </form>
-    
-    <h2>All Tasks</h2>
-    <ul id="task-list"></ul>
+    <div layout:fragment="content">
+        <h1>Task Management</h1>
+        
+        <h2>Add a New Task</h2>
+        <form id="task-form">
+            <input type="text" id="task-name" placeholder="Task Name" required>
+            <input type="text" id="task-desc" placeholder="Task Description" required>
+            <button type="submit">Add Task</button>
+        </form>
+        
+        <h2>All Tasks</h2>
+        <ul id="task-list"></ul>
+    </div>
 
     <script>
+        // Handle form submission to add a new task
         document.getElementById('task-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             
             const taskName = document.getElementById('task-name').value;
             const taskDesc = document.getElementById('task-desc').value;
-    
-            const response = await fetch('/api/tasks?username=gcustu1', {
+
+            const response = await fetch('/api/tasks', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
-                    title: taskName,
+                    name: taskName,
                     description: taskDesc,
-                    dueDate: "2024-10-25",
+                    dueDate: "2024-10-25", // Example static date; replace with a date picker if needed
                     priority: "MEDIUM",
                     status: "PENDING"
                 })
             });
-    
+
             if (response.ok) {
-                const task = await response.json();
-                const taskList = document.getElementById('task-list');
-                const taskItem = document.createElement('li');
-                taskItem.textContent = `${task.title}: ${task.description}`;
-                taskList.appendChild(taskItem);
+                // Clear the form fields after a successful submission
+                document.getElementById('task-name').value = '';
+                document.getElementById('task-desc').value = '';
+
+                // Fetch the updated list of tasks to show the new task
+                fetchTasks();
+            } else {
+                console.error('Failed to add task');
             }
         });
-    
+
+        // Function to fetch all tasks and display them
         async function fetchTasks() {
-            const response = await fetch('/api/tasks?username=gcustu1');
-            const tasks = await response.json();
+            const response = await fetch('/api/tasks');
             const taskList = document.getElementById('task-list');
-    
-            tasks.forEach(task => {
-                const taskItem = document.createElement('li');
-                taskItem.textContent = `${task.title}: ${task.description}`;
-                taskList.appendChild(taskItem);
-            });
+            taskList.innerHTML = ''; // Clear existing tasks
+
+            if (response.ok) {
+                const tasks = await response.json();
+                
+                tasks.forEach(task => {
+                    const taskItem = document.createElement('li');
+                    taskItem.textContent = `${task.name}: ${task.description}`;
+                    taskList.appendChild(taskItem);
+                });
+            } else {
+                console.error('Failed to fetch tasks');
+            }
         }
-    
+
+        // Load tasks when the page is loaded
         fetchTasks();
     </script>
 </body>
 </html>
+
