@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="layouts/defaultTemplate">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,74 +7,128 @@
     <link rel="stylesheet" th:href="@{/static/css/styles.css}">
 </head>
 <body>
-    <div layout:fragment="content">
+    <div>
         <h1>Task Management</h1>
-        
+
+        <!-- Notification area for messages and errors -->
+        <div id="notification" style="color: red;"></div>
+
         <h2>Add a New Task</h2>
         <form id="task-form">
             <input type="text" id="task-name" placeholder="Task Name" required>
             <input type="text" id="task-desc" placeholder="Task Description" required>
             <button type="submit">Add Task</button>
         </form>
-        
+
         <h2>All Tasks</h2>
         <ul id="task-list"></ul>
     </div>
 
     <script>
-        // Handle form submission to add a new task
-        document.getElementById('task-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            const taskName = document.getElementById('task-name').value;
-            const taskDesc = document.getElementById('task-desc').value;
+        // Function to display notifications
+        function showNotification(message, color = 'red') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.color = color;
+            setTimeout(() => {
+                notification.textContent = '';
+            }, 3000);
+        }
 
-            const response = await fetch('/api/tasks', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: taskName,
-                    description: taskDesc,
-                    dueDate: "2024-10-25", // Example static date; replace with a date picker if needed
-                    priority: "MEDIUM",
-                    status: "PENDING"
-                })
-            });
-
-            if (response.ok) {
-                // Clear the form fields after a successful submission
-                document.getElementById('task-name').value = '';
-                document.getElementById('task-desc').value = '';
-
-                // Fetch the updated list of tasks to show the new task
-                fetchTasks();
-            } else {
-                console.error('Failed to add task');
-            }
-        });
-
-        // Function to fetch all tasks and display them
+        // Fetch all tasks and display them
         async function fetchTasks() {
-            const response = await fetch('/api/tasks');
-            const taskList = document.getElementById('task-list');
-            taskList.innerHTML = ''; // Clear existing tasks
+            try {
+                const response = await fetch('http://localhost:8080/api/tasks');
+                const taskList = document.getElementById('task-list');
+                taskList.innerHTML = ''; // Clear existing tasks
 
-            if (response.ok) {
-                const tasks = await response.json();
-                
-                tasks.forEach(task => {
-                    const taskItem = document.createElement('li');
-                    taskItem.textContent = `${task.name}: ${task.description}`;
-                    taskList.appendChild(taskItem);
-                });
-            } else {
-                console.error('Failed to fetch tasks');
+                if (response.ok) {
+                    const tasks = await response.json();
+                    if (tasks.length === 0) {
+                        const emptyMessage = document.createElement('li');
+                        emptyMessage.textContent = "No tasks available.";
+                        taskList.appendChild(emptyMessage);
+                    } else {
+                        tasks.forEach(task => {
+                            const taskItem = document.createElement('li');
+                            taskItem.textContent = `${task.name}: ${task.description}`;
+
+                            // Add a remove button for each task
+                            const removeButton = document.createElement('button');
+                            removeButton.textContent = "Remove";
+                            removeButton.style.marginLeft = "10px";
+                            removeButton.addEventListener('click', () => {
+                                deleteTask(task.id);
+                            });
+
+                            taskItem.appendChild(removeButton);
+                            taskList.appendChild(taskItem);
+                        });
+                    }
+                } else {
+                    showNotification("Failed to fetch tasks. Status: " + response.status, "red");
+                    console.error("Failed to fetch tasks. Status:", response.status);
+                }
+            } catch (error) {
+                showNotification("Error fetching tasks.", "red");
+                console.error("Error fetching tasks:", error);
             }
         }
 
-        // Load tasks when the page is loaded
+        // Delete a task
+        async function deleteTask(taskId) {
+            try {
+                const response = await fetch(`http://localhost:8080/api/tasks/${taskId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    showNotification("Task deleted successfully.", "green");
+                    fetchTasks(); // Refresh the list after deletion
+                } else {
+                    showNotification("Failed to delete task.", "red");
+                    console.error("Failed to delete task. Status:", response.status);
+                }
+            } catch (error) {
+                showNotification("Error deleting task.", "red");
+                console.error("Error deleting task:", error);
+            }
+        }
+
+        // Handle form submission to add a new task
+        document.getElementById('task-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const taskName = document.getElementById('task-name').value;
+            const taskDesc = document.getElementById('task-desc').value;
+
+            try {
+                const response = await fetch('http://localhost:8080/api/tasks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: taskName,
+                        description: taskDesc
+                    })
+                });
+
+                if (response.ok) {
+                    showNotification("Task added successfully.", "green");
+                    document.getElementById('task-name').value = '';
+                    document.getElementById('task-desc').value = '';
+                    fetchTasks(); // Refresh the task list
+                } else {
+                    showNotification("Failed to add task. Status: " + response.status, "red");
+                    console.error("Failed to add task. Status:", response.status);
+                }
+            } catch (error) {
+                showNotification("Error adding task.", "red");
+                console.error("Error adding task:", error);
+            }
+        });
+
+        // Load tasks on page load
         fetchTasks();
     </script>
 </body>

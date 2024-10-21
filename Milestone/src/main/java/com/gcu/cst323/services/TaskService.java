@@ -33,8 +33,7 @@ public class TaskService {
     public Optional<TaskModel> updateTask(Long id, TaskModel task) {
         if (taskRepository.existsById(id)) {
             task.setId(id);
-            TaskModel updatedTask = taskRepository.save(task);
-            return Optional.of(updatedTask);
+            return Optional.of(taskRepository.save(task));
         }
         return Optional.empty();
     }
@@ -48,3 +47,5 @@ public class TaskService {
         }
     }
 }
+
+
