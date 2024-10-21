@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layouts/defaultTemplate">
+<head>
+    <title>Tasks</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body layout:fragment="content">
+    <h2>Task List</h2>
+    <a href="/tasks/new">Add New Task</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="task : ${tasks}">
+                <td th:text="${task.title}"></td>
+                <td th:text="${task.description}"></td>
+                <td th:text="${task.dueDate}"></td>
+                <td th:text="${task.priority}"></td>
+                <td th:text="${task.status}"></td>
+                <td>
+                    <a th:href="@{/tasks/edit/{id}(id=${task.taskId})}">Edit</a>
+                    <form th:action="@{/tasks/delete/{id}(id=${task.taskId})}" method="post" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
