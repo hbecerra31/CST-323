@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title th:text="${title}">Page Title</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+
+<body layout:fragment="content" class="form-signin mx-auto mt-5" style="width: 300px;">
+	<div class="d-flex justify-content-between">
+		<h1 class="h3 mb-3 fw-normal" th:text="${message}">Message</h1>
+		<a class="btn btn-info fs-5" th:href="@{/}">🏠</a>
+	</div>
+	<form th:action="@{/users/login}" method="post">
+		<!-- user.username -->
+		<div class="form-floating">
+			<input class="form-control" type="text" id="username" name="username" placeholder="username" required>
+			<label for="username">Username</label>
+		</div>
+	    <!-- user.password -->
+		<div class="form-floating">
+			<input class="form-control" type="password" id="password" name="password" placeholder="Password" required>
+			<label for="password">Password</label>
+		</div>
+		<!-- Action Buttons -->
+		<div class="d-flex justify-content-between">
+			<button class="btn btn-primary w-100 py-2" type="submit">Login</button>
+			<a class="btn btn-secondary w-100 py-2" th:href="@{/users/register}">Register</a>
+		</div>
+	</form>
+	<div th:if="${error}">
+		<p th:text="${error}"></p>
+	</div>
+</body>
+
+</html>

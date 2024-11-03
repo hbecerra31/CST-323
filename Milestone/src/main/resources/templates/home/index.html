@@ -1,13 +1,16 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layouts/defaultTemplate">
-	<head>
-	    <title th:text="${title}"></title>
-	</head>
-	<body>
-	    <div layout:fragment="content">
-	        <h1 th:text="${title}"></h1>
-	        <h2 th:text="${message}"></h2>
-			<p>Some text</p>
-	    </div>
-	</body>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="layouts/defaultTemplate">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title th:text="${title}">Page Title</title>
+	<link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body layout:fragment="content">
+	<h1 class="mt-3" th:text="${title}"></h1>
+	<h4 th:text="${message}"></h4>
+</body>
+
 </html>
