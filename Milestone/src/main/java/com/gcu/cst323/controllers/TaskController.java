@@ -1,3 +1,4 @@
+
 package com.gcu.cst323.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,66 +7,136 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.gcu.cst323.models.TaskModel;
+import com.gcu.cst323.models.UserModel;
 import com.gcu.cst323.services.TaskService;
+import com.gcu.cst323.services.UserService;
 
-import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 
+/**
+ * TaskController is a Spring MVC controller that handles HTTP requests related
+ * to tasks.
+ * 
+ */
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
 
-    @Autowired
-    private TaskService taskService;
+	@Autowired
+	private TaskService taskService;
 
-    // Show all tasks for the logged-in user
-    @GetMapping
-    public String listTasks(Model model, Principal principal) {
-        String username = principal.getName();
-        List<TaskModel> tasks = taskService.getTasksForUser(username);
-        model.addAttribute("tasks", tasks);
-        return "task/tasks";
-    }
+	@Autowired
+	private UserService userService;
 
-    // Show the form for creating a new task
-    @GetMapping("/new")
-    public String showTaskForm(Model model) {
-        model.addAttribute("task", new TaskModel());
-        return "task/task-form";
-    }
+	/**
+	 * Handles HTTP GET requests to show all tasks.
+	 *
+	 * @param model the Model object used to pass attributes to the view
+	 * @return the name of the view to be rendered ("task/tasks")
+	 */
+	@GetMapping
+	public String listTasks(Model model) {
+		model.addAttribute("title", "Tasks"); // Add a title attribute to the model
+		List<TaskModel> tasks = taskService.getAllTasks(); // Get all tasks from the service
+		model.addAttribute("tasks", tasks); // Add the tasks
+		return "task/tasks";
+	}
 
-    // Handle the task creation
-    @PostMapping("/new")
-    public String createTask(@ModelAttribute TaskModel task, Principal principal, Model model) {
-        try {
-            String username = principal.getName();
-            taskService.createTask(task, username);
-            return "redirect:/tasks";
-        } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
-            return "task/task-form";
-        }
-    }
+	/**
+	 * Handles HTTP GET requests to show the form for creating a new task.
+	 *
+	 * @param model the Model object used to pass attributes to the view
+	 * @return the name of the view to be rendered ("task/task-form")
+	 */
+	@GetMapping("/new")
+	public String showTaskForm(Model model) {
+		model.addAttribute("title", "New Task"); // Add a title attribute to the model
+		model.addAttribute("task", new TaskModel()); // Add an empty TaskModel to bind the
 
-    // Show the form for editing a task
-//    @GetMapping("/edit/{taskId}")
-//    public String showEditForm(@PathVariable Long taskId, Model model) {
-//    	TaskModel task = taskService.findTaskById(taskId);
-//        model.addAttribute("task", task);
-//        return "task/task-form";
-//    }
+		// Add the list of user options to the model
+		List<UserModel> userOptions = Arrays.asList(userService.getAllUsers().toArray(new UserModel[0]));
+		model.addAttribute("userOptions", userOptions);
 
-    // Handle the task update
-    @PostMapping("/edit/{taskId}")
-    public String updateTask(@ModelAttribute TaskModel task, @PathVariable Long taskId) {
-        taskService.updateTask(task);
-        return "redirect:/tasks";
-    }
+		// Add the list of priority options to the model
+		List<TaskModel.Priority> priorityOptions = Arrays.asList(TaskModel.Priority.values());
+		model.addAttribute("priorityOptions", priorityOptions);
 
-    // Handle task deletion
-    @PostMapping("/delete/{taskId}")
-    public String deleteTask(@PathVariable Long taskId) {
-        taskService.deleteTask(taskId);
-        return "redirect:/tasks";
-    }
+		// Add the list of status options to the model
+		List<TaskModel.Status> statusOptions = Arrays.asList(TaskModel.Status.values());
+		model.addAttribute("statusOptions", statusOptions);
+
+		return "task/task-form";
+	}
+
+	/**
+	 * Handles HTTP POST requests to create a new task.
+	 *
+	 * @param task  the TaskModel object containing the task data
+	 * @param model the Model object used to pass attributes to the view
+	 * @return the name of the view to be rendered or a redirect URL
+	 */
+	@PostMapping("/new")
+	public String createTask(@ModelAttribute TaskModel task, Model model) {
+		// Validate the task data
+		try {
+			taskService.createTask(task);
+			return "redirect:/tasks";
+		} catch (RuntimeException e) {
+			model.addAttribute("error", e.getMessage());
+			return "task/task-form";
+		}
+	}
+
+	/**
+	 * Handles HTTP GET requests to show the form for editing a task.
+	 *
+	 * @param taskId the ID of the task to be edited
+	 * @param model  the Model object used to pass attributes to the view
+	 * @return the name of the view to be rendered ("task/task-form")
+	 */
+	@GetMapping("/edit/{taskId}")
+	public String showEditForm(@PathVariable Long taskId, Model model) {
+		model.addAttribute("title", "Edit Task"); // Add a title attribute to the model
+		TaskModel task = taskService.findTaskById(taskId); // Get the task by ID
+		model.addAttribute("task", task); // Add the task to the model
+
+		// Add the list of user options to the model
+		List<UserModel> userOptions = Arrays.asList(userService.getAllUsers().toArray(new UserModel[0]));
+		model.addAttribute("userOptions", userOptions);
+
+		// Add the list of priority options to the model
+		List<TaskModel.Priority> priorityOptions = Arrays.asList(TaskModel.Priority.values());
+		model.addAttribute("priorityOptions", priorityOptions);
+
+		// Add the list of status options to the model
+		List<TaskModel.Status> statusOptions = Arrays.asList(TaskModel.Status.values());
+		model.addAttribute("statusOptions", statusOptions);
+		return "task/task-form";
+	}
+
+	/**
+	 * Handles HTTP POST requests to update a task.
+	 *
+	 * @param task   the TaskModel object containing the updated task data
+	 * @param taskId the ID of the task to be updated
+	 * @return a redirect URL to the list of tasks
+	 */
+	@PostMapping("/edit/{taskId}")
+	public String updateTask(@ModelAttribute TaskModel task, @PathVariable Long taskId) {
+		taskService.updateTask(task);
+		return "redirect:/tasks";
+	}
+
+	/**
+	 * Handles HTTP POST requests to delete a task.
+	 *
+	 * @param taskId the ID of the task to be deleted
+	 * @return a redirect URL to the list of tasks
+	 */
+	@PostMapping("/delete/{taskId}")
+	public String deleteTask(@PathVariable Long taskId) {
+		taskService.deleteTask(taskId);
+		return "redirect:/tasks";
+	}
 }

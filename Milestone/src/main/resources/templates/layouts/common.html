@@ -15,23 +15,30 @@
 		<div class="collapse navbar-collapse" id="navbarColor01">
 			<ul class="navbar-nav me-auto">
 				<li class="nav-item">
-					<a class="nav-link active" href="#">Home
+					<a class="nav-link" href="/">Home
 						<span class="visually-hidden">(current)</span>
 					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/tasks">Tasks</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="#">About</a>
 				</li>
 			</ul>
+			<div>
+				<a class="btn btn-primary" th:href="@{/users/login}">Login</a>
+				<a class="btn btn-secondary" th:href="@{/users/register}">Register</a>
+			</div>
 		</div>
 	</div>
 </nav>
 
 <!-- Common Footer Fragment -->
-<footer th:fragment="footer" class="footer">
-	<div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
-		<p>© 2024 CST-323 Students, Inc. All rights reserved.</p>
-	</div>
-</footer>
+<footer th:fragment=" footer" class="footer">
+					<div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+						<p>© 2024 CST-323 Students, Inc. All rights reserved.</p>
+					</div>
+					</footer>
 
 </html>

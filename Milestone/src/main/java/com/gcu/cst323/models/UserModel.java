@@ -1,3 +1,4 @@
+
 package com.gcu.cst323.models;
 
 import java.time.LocalDateTime;
@@ -5,6 +6,9 @@ import java.util.List;
 
 import jakarta.persistence.*;
 
+/**
+ * UserModel is an entity that represents a user in the system.
+ */
 @Entity
 @Table(name = "users")
 public class UserModel {
@@ -31,12 +35,19 @@ public class UserModel {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<TaskModel> tasks;
 
+	/**
+	 * Sets the createdAt and updatedAt fields to the current date and time before
+	 * persisting.
+	 */
 	@PrePersist
 	protected void onCreate() {
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
 	}
 
+	/**
+	 * Sets the updatedAt field to the current date and time before updating.
+	 */
 	@PreUpdate
 	protected void onUpdate() {
 		this.updatedAt = LocalDateTime.now();
@@ -45,6 +56,8 @@ public class UserModel {
 	// Getters and Setters
 
 	/**
+	 * Gets the userId.
+	 *
 	 * @return the userId
 	 */
 	public Long getUserId() {
@@ -52,6 +65,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Sets the userId.
+	 *
 	 * @param userId the userId to set
 	 */
 	public void setUserId(Long userId) {
@@ -59,6 +74,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Gets the username.
+	 *
 	 * @return the username
 	 */
 	public String getUsername() {
@@ -66,6 +83,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Sets the username.
+	 *
 	 * @param username the username to set
 	 */
 	public void setUsername(String username) {
@@ -73,6 +92,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Gets the password.
+	 *
 	 * @return the password
 	 */
 	public String getPassword() {
@@ -80,6 +101,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Sets the password.
+	 *
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
@@ -87,6 +110,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Gets the email.
+	 *
 	 * @return the email
 	 */
 	public String getEmail() {
@@ -94,6 +119,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Sets the email.
+	 *
 	 * @param email the email to set
 	 */
 	public void setEmail(String email) {
@@ -101,6 +128,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Gets the createdAt.
+	 *
 	 * @return the createdAt
 	 */
 	public LocalDateTime getCreatedAt() {
@@ -108,6 +137,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Sets the createdAt.
+	 *
 	 * @param createdAt the createdAt to set
 	 */
 	public void setCreatedAt(LocalDateTime createdAt) {
@@ -115,6 +146,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Gets the updatedAt.
+	 *
 	 * @return the updatedAt
 	 */
 	public LocalDateTime getUpdatedAt() {
@@ -122,6 +155,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Sets the updatedAt.
+	 *
 	 * @param updatedAt the updatedAt to set
 	 */
 	public void setUpdatedAt(LocalDateTime updatedAt) {
@@ -129,6 +164,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Gets the tasks.
+	 *
 	 * @return the tasks
 	 */
 	public List<TaskModel> getTasks() {
@@ -136,6 +173,8 @@ public class UserModel {
 	}
 
 	/**
+	 * Sets the tasks.
+	 *
 	 * @param tasks the tasks to set
 	 */
 	public void setTasks(List<TaskModel> tasks) {

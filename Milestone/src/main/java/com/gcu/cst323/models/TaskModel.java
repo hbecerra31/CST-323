@@ -1,10 +1,16 @@
+
 package com.gcu.cst323.models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.*;
 
+/**
+ * TaskModel is an entity that represents a task in the system.
+ */
 @Entity
 @Table(name = "tasks")
 public class TaskModel {
@@ -24,6 +30,7 @@ public class TaskModel {
 	private String description;
 
 	@Column
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dueDate;
 
 	@Enumerated(EnumType.STRING)
@@ -40,30 +47,43 @@ public class TaskModel {
 	@Column(nullable = false)
 	private LocalDateTime updatedAt;
 
+	/**
+	 * Sets the createdAt and updatedAt fields to the current date and time before
+	 * persisting.
+	 */
 	@PrePersist
 	protected void onCreate() {
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
 	}
 
+	/**
+	 * Sets the updatedAt field to the current date and time before updating.
+	 */
 	@PreUpdate
 	protected void onUpdate() {
 		this.updatedAt = LocalDateTime.now();
 	}
 
-	// Enum for Priority
+	/**
+	 * Enum representing the priority of the task.
+	 */
 	public enum Priority {
-		LOW, MEDIUM, HIGH
+		Low, Medium, High
 	}
 
-	// Enum for Status
+	/**
+	 * Enum representing the status of the task.
+	 */
 	public enum Status {
-		PENDING, COMPLETED
+		Pending, Completed
 	}
 
 	// Getters and Setters
 
 	/**
+	 * Gets the taskId.
+	 *
 	 * @return the taskId
 	 */
 	public Long getTaskId() {
@@ -71,6 +91,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Sets the taskId.
+	 *
 	 * @param taskId the taskId to set
 	 */
 	public void setTaskId(Long taskId) {
@@ -78,6 +100,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Gets the user.
+	 *
 	 * @return the user
 	 */
 	public UserModel getUser() {
@@ -85,6 +109,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Sets the user.
+	 *
 	 * @param user the user to set
 	 */
 	public void setUser(UserModel user) {
@@ -92,6 +118,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Gets the title.
+	 *
 	 * @return the title
 	 */
 	public String getTitle() {
@@ -99,6 +127,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Sets the title.
+	 *
 	 * @param title the title to set
 	 */
 	public void setTitle(String title) {
@@ -106,6 +136,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Gets the description.
+	 *
 	 * @return the description
 	 */
 	public String getDescription() {
@@ -113,6 +145,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Sets the description.
+	 *
 	 * @param description the description to set
 	 */
 	public void setDescription(String description) {
@@ -120,6 +154,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Gets the dueDate.
+	 *
 	 * @return the dueDate
 	 */
 	public LocalDate getDueDate() {
@@ -127,6 +163,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Sets the dueDate.
+	 *
 	 * @param dueDate the dueDate to set
 	 */
 	public void setDueDate(LocalDate dueDate) {
@@ -134,6 +172,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Gets the priority.
+	 *
 	 * @return the priority
 	 */
 	public Priority getPriority() {
@@ -141,6 +181,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Sets the priority.
+	 *
 	 * @param priority the priority to set
 	 */
 	public void setPriority(Priority priority) {
@@ -148,6 +190,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Gets the status.
+	 *
 	 * @return the status
 	 */
 	public Status getStatus() {
@@ -155,6 +199,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Sets the status.
+	 *
 	 * @param status the status to set
 	 */
 	public void setStatus(Status status) {
@@ -162,6 +208,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Gets the createdAt.
+	 *
 	 * @return the createdAt
 	 */
 	public LocalDateTime getCreatedAt() {
@@ -169,6 +217,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Sets the createdAt.
+	 *
 	 * @param createdAt the createdAt to set
 	 */
 	public void setCreatedAt(LocalDateTime createdAt) {
@@ -176,6 +226,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Gets the updatedAt.
+	 *
 	 * @return the updatedAt
 	 */
 	public LocalDateTime getUpdatedAt() {
@@ -183,6 +235,8 @@ public class TaskModel {
 	}
 
 	/**
+	 * Sets the updatedAt.
+	 *
 	 * @param updatedAt the updatedAt to set
 	 */
 	public void setUpdatedAt(LocalDateTime updatedAt) {
