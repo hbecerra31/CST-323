@@ -1,10 +1,18 @@
 
+
 package com.gcu.cst323.controllers;
+
+
+package com.gcu.cst323.controllers;
+
+import com.gcu.cst323.models.TaskModel;
+import com.gcu.cst323.services.TaskService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 
 import com.gcu.cst323.models.TaskModel;
 import com.gcu.cst323.models.UserModel;
@@ -19,9 +27,14 @@ import java.util.List;
  * to tasks.
  * 
  */
+
+import java.util.List;
+
+
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
+
 
 	@Autowired
 	private TaskService taskService;
@@ -139,4 +152,52 @@ public class TaskController {
 		taskService.deleteTask(taskId);
 		return "redirect:/tasks";
 	}
+
+    @Autowired
+    private TaskService taskService;
+
+    // Get all tasks
+    @GetMapping
+    public String getAllTasks(Model model) {
+        List<TaskModel> tasks = taskService.getAllTasks();
+        model.addAttribute("tasks", tasks);
+        return "task/taskList";
+    }
+
+    // Display form to add a task
+    @GetMapping("/add")
+    public String showAddTaskForm(Model model) {
+        model.addAttribute("task", new TaskModel());
+        return "task/addTask";
+    }
+
+    // Handle adding a new task
+    @PostMapping("/add")
+    public String addTask(@ModelAttribute("task") TaskModel taskModel) {
+        taskService.saveTask(taskModel);
+        return "redirect:/tasks";
+    }
+
+    // Display edit task form
+    @GetMapping("/edit/{id}")
+    public String showEditTaskForm(@PathVariable("id") Long id, Model model) {
+        TaskModel task = taskService.getTaskById(id);
+        model.addAttribute("task", task);
+        return "task/editTask";
+    }
+
+    // Handle updating a task
+    @PostMapping("/edit/{id}")
+    public String updateTask(@PathVariable("id") Long id, @ModelAttribute("task") TaskModel taskModel) {
+        taskService.updateTask(taskModel);
+        return "redirect:/tasks";
+    }
+
+    // Handle deleting a task
+    @GetMapping("/delete/{id}")
+    public String deleteTask(@PathVariable("id") Long id) {
+        taskService.deleteTask(id);
+        return "redirect:/tasks";
+    }
+
 }
