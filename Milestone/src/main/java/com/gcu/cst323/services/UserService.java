@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.gcu.cst323.models.UserModel;
@@ -20,8 +20,8 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	//@Autowired
+	//private PasswordEncoder passwordEncoder;
 
 	/**
 	 * Registers a new user.
@@ -39,7 +39,7 @@ public class UserService {
 		if (userRepository.existsByEmail(user.getEmail())) {
 			throw new RuntimeException("Email is already registered.");
 		}
-		user.setPassword(passwordEncoder.encode(user.getPassword())); // Hash the password
+		//user.setPassword(passwordEncoder.encode(user.getPassword())); // Hash the password
 		return userRepository.save(user);
 	}
 
@@ -80,8 +80,8 @@ public class UserService {
 	 * @param rawPassword    the raw password to be checked
 	 * @param hashedPassword the hashed password to be checked against
 	 * @return true if the passwords match, false otherwise
-	 */
+	 *
 	public boolean checkPassword(String rawPassword, String hashedPassword) {
 		return passwordEncoder.matches(rawPassword, hashedPassword);
-	}
+	}*/
 }
