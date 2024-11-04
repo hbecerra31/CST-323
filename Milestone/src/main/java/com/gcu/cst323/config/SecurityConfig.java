@@ -36,11 +36,13 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable()) // Disable CSRF protection
-				.authorizeHttpRequests((auth) -> auth.requestMatchers("/user/register", "/user/login").permitAll() // Allow access to registration and login pages
-						.anyRequest().authenticated()) // Require authentication for all other requests
-				.formLogin(login -> login.loginPage("/user/login").loginProcessingUrl("/user/login") // Set login page
-						.defaultSuccessUrl("/", true).permitAll()) // Allow access to login page
-				.logout(logout -> logout.permitAll()); // Allow access
+			.authorizeHttpRequests(
+				(auth) -> auth.requestMatchers("/users/register", "/users/login").permitAll() // Allow access to registration and login pages
+				.anyRequest().authenticated()) // Require authentication for all other requests
+			.formLogin(
+				login -> login.loginPage("/users/login").loginProcessingUrl("/users/login") // Set login page
+				.defaultSuccessUrl("/", true).permitAll()) // Allow access to login page
+			.logout(logout -> logout.permitAll()); // Allow access
 		return http.build();
 	}
 }

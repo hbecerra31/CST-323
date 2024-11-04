@@ -2,9 +2,6 @@
 
 package com.gcu.cst323.controllers;
 
-
-package com.gcu.cst323.controllers;
-
 import com.gcu.cst323.models.TaskModel;
 import com.gcu.cst323.services.TaskService;
 
@@ -14,9 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
-import com.gcu.cst323.models.TaskModel;
 import com.gcu.cst323.models.UserModel;
-import com.gcu.cst323.services.TaskService;
 import com.gcu.cst323.services.UserService;
 
 import java.util.Arrays;
@@ -27,8 +22,6 @@ import java.util.List;
  * to tasks.
  * 
  */
-
-import java.util.List;
 
 
 @Controller
@@ -153,8 +146,9 @@ public class TaskController {
 		return "redirect:/tasks";
 	}
 
-    @Autowired
-    private TaskService taskService;
+
+	/// Ealona's code merge ///
+	
 
     // Get all tasks
     @GetMapping
@@ -190,13 +184,6 @@ public class TaskController {
     @PostMapping("/edit/{id}")
     public String updateTask(@PathVariable("id") Long id, @ModelAttribute("task") TaskModel taskModel) {
         taskService.updateTask(taskModel);
-        return "redirect:/tasks";
-    }
-
-    // Handle deleting a task
-    @GetMapping("/delete/{id}")
-    public String deleteTask(@PathVariable("id") Long id) {
-        taskService.deleteTask(id);
         return "redirect:/tasks";
     }
 

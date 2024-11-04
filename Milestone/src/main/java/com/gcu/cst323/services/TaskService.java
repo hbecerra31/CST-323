@@ -115,8 +115,8 @@ public class TaskService {
 		return taskRepository.findById(taskId).orElse(null);
 	}
 
-    @Autowired
-    private UserRepository userRepository;
+	
+	/// Ealona's code merge ///
 
     // Save a new task
     public TaskModel saveTask(TaskModel task) {
@@ -129,16 +129,6 @@ public class TaskService {
             .orElseThrow(() -> new RuntimeException("Task not found"));
     }
 
-    // Update a task
-    public TaskModel updateTask(TaskModel task) {
-        return taskRepository.save(task);
-    }
-
-    // Delete a task by ID
-    public void deleteTask(Long id) {
-        taskRepository.deleteById(id);
-    }
-
     // Create a task for a specific user
     public TaskModel createTask(TaskModel task, String username) {
         Optional<UserModel> user = userRepository.findByUsername(username);
@@ -148,21 +138,6 @@ public class TaskService {
         } else {
             throw new RuntimeException("User not found");
         }
-    }
-
-    // Get all tasks for a specific user
-    public List<TaskModel> getTasksForUser(String username) {
-        Optional<UserModel> user = userRepository.findByUsername(username);
-        if (user.isPresent()) {
-            return taskRepository.findByUser(user.get());
-        } else {
-            throw new RuntimeException("User not found");
-        }
-    }
-
-    // Get all tasks (for all users)
-    public List<TaskModel> getAllTasks() {
-        return taskRepository.findAll();
     }
 
 }
