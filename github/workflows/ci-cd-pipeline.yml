@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # This will trigger the pipeline on pushes to the main branch
+      - main  ## This will trigger the pipeline on pushes to the main branch
   pull_request:
     branches:
       - main
