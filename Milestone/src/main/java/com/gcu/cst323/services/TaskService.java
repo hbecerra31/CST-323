@@ -1,4 +1,7 @@
+// Triggering CI/CD pipeline test
+
 package com.gcu.cst323.services;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +21,9 @@ import com.gcu.cst323.repositories.UserRepository;
 @Service
 public class TaskService {
 
-	@Autowired
-	private TaskRepository taskRepository;
+    @Autowired
+    private TaskRepository taskRepository;
+
 
 	@Autowired
 	private UserRepository userRepository;
@@ -110,4 +114,55 @@ public class TaskService {
 	public TaskModel findTaskById(Long taskId) {
 		return taskRepository.findById(taskId).orElse(null);
 	}
+
+    @Autowired
+    private UserRepository userRepository;
+
+    // Save a new task
+    public TaskModel saveTask(TaskModel task) {
+        return taskRepository.save(task);
+    }
+
+    // Get task by ID
+    public TaskModel getTaskById(Long id) {
+        return taskRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Task not found"));
+    }
+
+    // Update a task
+    public TaskModel updateTask(TaskModel task) {
+        return taskRepository.save(task);
+    }
+
+    // Delete a task by ID
+    public void deleteTask(Long id) {
+        taskRepository.deleteById(id);
+    }
+
+    // Create a task for a specific user
+    public TaskModel createTask(TaskModel task, String username) {
+        Optional<UserModel> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            task.setUser(user.get());
+            return taskRepository.save(task);
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+
+    // Get all tasks for a specific user
+    public List<TaskModel> getTasksForUser(String username) {
+        Optional<UserModel> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            return taskRepository.findByUser(user.get());
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+
+    // Get all tasks (for all users)
+    public List<TaskModel> getAllTasks() {
+        return taskRepository.findAll();
+    }
+
 }
