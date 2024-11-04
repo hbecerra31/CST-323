@@ -1,6 +1,4 @@
-/** 
- *Testing Pipeline.
-*/
+// Testing Pipeline
 /**
  * HomeController is a Spring MVC controller that handles HTTP GET requests for the home page.
  */
