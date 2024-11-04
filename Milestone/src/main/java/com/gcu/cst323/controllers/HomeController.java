@@ -7,6 +7,7 @@ package com.gcu.cst323.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * HomeController class handles the root URL ("/") and returns the home page
@@ -15,16 +16,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
+	@GetMapping("/")
+	public String index(Model model) {
+        return "redirect:/users/login";
+	}
+	
 	/**
 	 * Handles HTTP GET requests for the root URL ("/").
 	 * 
 	 * @param model the Model object used to pass attributes to the view
 	 * @return the name of the view to be rendered ("/home/index")
 	 */
-	@GetMapping("/")
+	@RequestMapping("/home")
 	public String home(Model model) {
 		model.addAttribute("title", "Home"); // Add a title attribute to the model
 		model.addAttribute("message", "Welcome to the CST-323 Home Page!"); // Add a message attribute to the model
-		return "/home/index";
+		return "home/index";
 	}
+	
+
 }
